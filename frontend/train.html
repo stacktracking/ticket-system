@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Train Booking - TicketSystem</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css">
+<style>
+.hero-train{height:280px;position:relative;background:linear-gradient(135deg,#4e73df,#1cc88a);display:flex;align-items:center;justify-content:center;color:#fff;text-align:center;margin-bottom:2rem}
+.seat.booked{background:#adb5bd;cursor:not-allowed}
+.seat-row{display:flex;justify-content:center;margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">TicketSystem</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="bus.html">Bus</a></li>
+        <li class="nav-item"><a class="nav-link active" href="train.html">Train</a></li>
+        <li class="nav-item"><a class="nav-link" href="plane.html">Plane</a></li>
+      </ul>
+      <div class="d-flex" id="guest-nav">
+        <a href="login.html" class="btn btn-outline-light me-2">Login</a>
+        <a href="signup.html" class="btn btn-light">Signup</a>
+      </div>
+      <div class="d-flex d-none" id="user-nav">
+        <a href="profile.html" class="btn btn-outline-light me-2">My Profile</a>
+        <button onclick="logout()" class="btn btn-light">Logout</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section class="hero-train">
+  <div>
+    <h1 class="mb-3">আপনার ট্রেন বুক করুন</h1>
+    <button class="btn btn-primary btn-lg" id="showBookingBtn">Book Your Train</button>
+  </div>
+</section>
+
+<section class="container my-5 p-4 shadow-lg rounded-4" id="bookingSection" style="display:none">
+  <h2 class="text-center mb-4 fw-bold">ট্রেন বুকিং ফর্ম</h2>
+
+  <form id="trainBookingForm">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">থেকে</label>
+        <select class="form-select" id="fromLocation" required>
+          <option value="">Select</option>
+          <option>Dhaka</option><option>Coxbazar</option><option>Chittagong</option>
+          <option>Khulna</option><option>Barishal</option><option>Jashore</option>
+          <option>Sylhet</option><option>Rajshahi</option><option>Netrokona</option><option>Madaripur</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">যাওয়ার গন্তব্য</label>
+        <select class="form-select" id="toLocation" required>
+          <option value="">Select</option>
+          <option>Dhaka</option><option>Coxbazar</option><option>Chittagong</option>
+          <option>Khulna</option><option>Barishal</option><option>Jashore</option>
+          <option>Sylhet</option><option>Rajshahi</option><option>Netrokona</option><option>Madaripur</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">যাত্রার তারিখ</label>
+        <input type="date" class="form-control" id="journeyDate" required />
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <button type="submit" class="btn btn-primary px-5 py-2 fw-semibold">ট্রেন খুঁজুন</button>
+    </div>
+  </form>
+
+  <div class="mt-5" id="trainList"></div>
+  <div class="mt-5 d-none" id="bogiSection">
+    <h4 class="mb-3">বগি নির্বাচন করুন</h4>
+    <div id="bogiList" class="row g-3"></div>
+  </div>
+  <div class="mt-5 d-none" id="seatSection">
+    <h4 class="mb-3">সিট নির্বাচন করুন (সর্বোচ্চ ৪)</h4>
+    <div id="seatList"></div>
+    <div class="mt-3"><button class="btn btn-success" id="confirmBooking">বুকিং নিশ্চিত করুন</button></div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+<script>
+const showBookingBtn = document.getElementById("showBookingBtn");
+const bookingSection = document.getElementById("bookingSection");
+
+showBookingBtn.addEventListener("click", () => {
+  bookingSection.style.display = "block";
+  bookingSection.scrollIntoView({ behavior: "smooth" });
+});
+
+const trainForm = document.getElementById("trainBookingForm");
+const trainList = document.getElementById("trainList");
+const bogiSection = document.getElementById("bogiSection");
+const bogiList = document.getElementById("bogiList");
+const seatSection = document.getElementById("seatSection");
+const seatList = document.getElementById("seatList");
+const confirmBookingBtn = document.getElementById("confirmBooking");
+
+const bogis = [
+  { name: "ক", type: "শোভন চেয়ার", price: 200 },
+  { name: "খ", type: "শোভন চেয়ার", price: 200 },
+  { name: "গ", type: "শোভন চেয়ার", price: 200 },
+  { name: "চ", type: "স্নিগ্ধ চেয়ার", price: 400 },
+  { name: "ছ", type: "স্নিগ্ধ চেয়ার", price: 400 },
+  { name: "ঢ", type: "AC চেয়ার", price: 600 },
+  { name: "ত", type: "AC চেয়ার", price: 600 }
+];
+
+const rows = ["A", "B", "C", "D", "E", "F"];
+let bookedSeats = {};
+let selectedSeats = [];
+let currentTrain = null, currentDate = null, currentBogi = null;
+
+const districts = ["Dhaka", "Coxbazar", "Chittagong", "Khulna", "Barishal", "Jashore", "Sylhet", "Rajshahi", "Netrokona", "Madaripur"];
+
+function getTrains(from, to) {
+  if (!from || !to || from === to) return [];
+  return [
+    { name: `${from}-${to} Express`, time: "06:00 AM" },
+    { name: `${from}-${to} Night`, time: "12:00 PM" }
+  ];
+}
+
+trainForm.addEventListener("submit", e => {
+  e.preventDefault();
+  bogiSection.classList.add("d-none");
+  seatSection.classList.add("d-none");
+  selectedSeats = [];
+
+  const from = document.getElementById("fromLocation").value;
+  const to = document.getElementById("toLocation").value;
+  const date = document.getElementById("journeyDate").value;
+
+  if (!districts.includes(from) || !districts.includes(to) || from === to) return alert("সঠিক 'থেকে' এবং 'গন্তব্য' নির্বাচন করুন!");
+
+  const trains = getTrains(from, to);
+  trainList.innerHTML = `<h4 class="mb-3">উপলব্ধ ট্রেন</h4>`;
+  const row = document.createElement("div");
+  row.classList.add("row", "g-3");
+
+  trains.forEach((train, idx) => {
+    const col = document.createElement("div");
+    col.classList.add("col-md-6");
+    col.innerHTML = `
+      <div class="card shadow-sm p-3">
+        <h5 class="card-title">${train.name}</h5>
+        <p>Departure: ${train.time} | Date: ${date}</p>
+        <button class="btn btn-primary" id="selectTrain-${idx}">ট্রেন নির্বাচন করুন</button>
+      </div>`;
+    row.appendChild(col);
+    setTimeout(() => {
+      document.getElementById(`selectTrain-${idx}`).addEventListener("click", () => showBogis(train, date));
+    }, 0);
+  });
+  trainList.innerHTML = '';
+  trainList.appendChild(row);
+  trainList.scrollIntoView({ behavior: "smooth" });
+});
+
+function showBogis(train, date) {
+  currentTrain = train; currentDate = date;
+  bogiList.innerHTML = "";
+  seatSection.classList.add("d-none");
+  selectedSeats = [];
+  bogis.forEach((bogi, idx) => {
+    const col = document.createElement("div");
+    col.classList.add("col-md-3");
+    col.innerHTML = `
+      <div class="card shadow-sm p-3">
+        <h5 class="card-title">বগি ${bogi.name}</h5>
+        <p>${bogi.type} - ৳${bogi.price}</p>
+        <button class="btn btn-success mt-2" id="selectBogi-${idx}">সিট দেখুন</button>
+      </div>`;
+    bogiList.appendChild(col);
+    setTimeout(() => {
+      document.getElementById(`selectBogi-${idx}`).addEventListener("click", () => showSeats(train, date, bogi));
+    }, 0);
+  });
+  bogiSection.classList.remove("d-none");
+  bogiSection.scrollIntoView({ behavior: "smooth" });
+}
+
+function showSeats(train, date, bogi) {
+  currentBogi = bogi;
+  seatList.innerHTML = "";
+  selectedSeats = [];
+  const key = `${train.name}_${date}_${bogi.name}`;
+  if (!bookedSeats[key]) bookedSeats[key] = [];
+
+  rows.forEach(rowLetter => {
+    const rowDiv = document.createElement("div");
+    rowDiv.classList.add("seat-row");
+
+    [1, 2].forEach(i => {
+      const seatId = `${rowLetter}${i}`;
+      const btn = document.createElement("div");
+      btn.className = `seat ${bookedSeats[key].includes(seatId) ? "booked" : ""}`;
+      btn.textContent = seatId;
+      if (!bookedSeats[key].includes(seatId)) btn.onclick = () => toggleSeat(key, seatId);
+      rowDiv.appendChild(btn);
+    });
+
+    const aisleDiv = document.createElement("div");
+    aisleDiv.className = "aisle";
+    rowDiv.appendChild(aisleDiv);
+
+    [3, 4].forEach(i => {
+      const seatId = `${rowLetter}${i}`;
+      const btn = document.createElement("div");
+      btn.className = `seat ${bookedSeats[key].includes(seatId) ? "booked" : ""}`;
+      btn.textContent = seatId;
+      if (!bookedSeats[key].includes(seatId)) btn.onclick = () => toggleSeat(key, seatId);
+      rowDiv.appendChild(btn);
+    });
+    seatList.appendChild(rowDiv);
+  });
+  seatSection.classList.remove("d-none");
+  seatSection.scrollIntoView({ behavior: "smooth" });
+}
+
+function toggleSeat(key, seatId) {
+  if (selectedSeats.includes(seatId)) {
+    selectedSeats = selectedSeats.filter(s => s !== seatId);
+    document.querySelectorAll(".seat").forEach(s => { if (s.textContent === seatId) s.classList.remove("selected"); });
+  } else {
+    if (selectedSeats.length >= 4) return alert("সর্বোচ্চ ৪ সিট নির্বাচন করতে পারবেন!");
+    selectedSeats.push(seatId);
+    document.querySelectorAll(".seat").forEach(s => { if (s.textContent === seatId) s.classList.add("selected"); });
+  }
+}
+
+confirmBookingBtn.addEventListener("click", () => {
+  if (selectedSeats.length === 0) return alert("কমপক্ষে একটি সিট নির্বাচন করুন!");
+
+  const data = {
+    transportType: 'Train',
+    route: {
+      from: document.getElementById("fromLocation").value,
+      to: document.getElementById("toLocation").value
+    },
+    date: currentDate,
+    seats: selectedSeats,
+    totalPrice: (currentBogi ? currentBogi.price : 200) * selectedSeats.length
+  };
+
+  window.bookTicket(data);
+});
+</script>
+</body>
+</html>

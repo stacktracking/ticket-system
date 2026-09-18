@@ -1,0 +1,237 @@
+:root {
+  --nav-h: 76px;
+  --brand: #0d6efd;
+  --brand-dark: #084298;
+}
+
+body {
+  margin: 0;
+  padding-top: var(--nav-h);
+  background: #f8f9fa;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* ---- Hero (index.html) ---- */
+.hero {
+  position: relative;
+  height: 60vh;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--brand), #1cc88a);
+  color: #fff;
+  text-align: center;
+}
+
+.hero .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-content h1 {
+  font-weight: 700;
+}
+
+/* ---- Transport / route cards ---- */
+.transport-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 12px;
+}
+
+.transport-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.transport-card img {
+  height: 70px;
+  width: 70px;
+  margin-top: 10px;
+}
+
+.route-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-img-wrapper {
+  height: 160px;
+  overflow: hidden;
+  background: #dee2e6;
+}
+
+.card-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- About / Contact / Social ---- */
+#about-us,
+#contact-us,
+#social-connect {
+  padding: 60px 0;
+}
+
+.section-title {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.section-description {
+  max-width: 750px;
+  margin: 0 auto 20px;
+  text-align: center;
+  color: #555;
+}
+
+.we-accept {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.about-image img {
+  max-width: 100%;
+  display: block;
+  margin: 15px auto 0;
+  border-radius: 10px;
+}
+
+.contact-card {
+  max-width: 600px;
+  background: #fff;
+  border-radius: 14px;
+}
+
+.btn-submit {
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.btn-submit:hover {
+  background: var(--brand-dark);
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.social-link {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.social-link:hover {
+  background: var(--brand-dark);
+}
+
+/* ---- Auth cards (login/signup) ---- */
+.auth-wrapper {
+  min-height: calc(100vh - var(--nav-h));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #4e73df, #1cc88a);
+  padding: 40px 15px;
+}
+
+.auth-card {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 420px;
+  padding: 30px;
+}
+
+.auth-card h3 {
+  font-weight: 700;
+  margin-bottom: 25px;
+  text-align: center;
+  color: #333;
+}
+
+/* ---- Booking pages (bus/train/plane) ---- */
+.seat {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #fff;
+  background: #6c757d;
+}
+
+.seat.AC { background: var(--brand); }
+.seat.NonAC { background: #fd7e14; }
+.seat.selected { background: #198754 !important; }
+.aisle { width: 20px; }
+
+.bus-card,
+.flight-card,
+.train-card {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.bus-card:hover,
+.flight-card:hover,
+.train-card:hover {
+  background: #eef5ff;
+}
+
+/* ---- Profile ---- */
+.profile-header {
+  background: linear-gradient(135deg, var(--brand), #0dcaf0);
+  color: #fff;
+  padding: 50px 0;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.booking-card {
+  border-left: 5px solid var(--brand);
+  border-radius: 8px;
+}
+
+/* ---- Confirmation ---- */
+.confirm-card {
+  max-width: 500px;
+  margin: 60px auto;
+  border-radius: 14px;
+  text-align: center;
+}
+
+footer {
+  text-align: center;
+  padding: 20px 0;
+  background: #212529;
+  color: #ccc;
+  margin-top: 40px;
+}
